@@ -1,13 +1,8 @@
 #include "framebuffer.hpp"
 #include "framebuffer_exception.hpp"
 
-Framebuffer::Framebuffer(const Texture2D& texture) {
+Framebuffer::Framebuffer() {
   generate();
-  attach_texture(texture);
-
-  if (!is_complete()) {
-    throw FramebufferException();
-  }
 }
 
 void Framebuffer::generate() {
@@ -17,11 +12,17 @@ void Framebuffer::generate() {
 /* Attach 2D texture as a color buffer to bound framebuffer */
 void Framebuffer::attach_texture(const Texture2D& texture) {
   bind();
+
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture.type, texture.id, 0);
   width = texture.width;
   height = texture.height;
   m_format = texture.format;
   n_channels = texture.get_n_channels();
+
+  if (!is_complete()) {
+    throw FramebufferException();
+  }
+
   unbind();
 }
 
@@ -43,11 +44,11 @@ void Framebuffer::clear(const glm::vec4& color) {
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Framebuffer::bind() {
+void Framebuffer::bind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 }
 
-void Framebuffer::unbind() {
+void Framebuffer::unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

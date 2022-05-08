@@ -13,20 +13,20 @@ struct Framebuffer {
   int height;
   int n_channels;
 
-  Framebuffer(const Texture2D& texture);
+  Framebuffer();
   bool is_complete();
   void free();
-  void bind();
-  void unbind();
+  void bind() const;
+  void unbind() const;
   void clear(const glm::vec4& color);
   void get_pixel_value(int x, int y, unsigned char* data);
+  void attach_texture(const Texture2D& texture);
 
 private:
   GLuint m_id;
   GLenum m_format;
 
   void generate();
-  void attach_texture(const Texture2D& texture);
 };
 
 #endif
